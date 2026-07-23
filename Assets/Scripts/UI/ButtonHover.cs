@@ -3,6 +3,12 @@ using UnityEngine.EventSystems;
 
 public class ButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    private void OnEnable()
+    {
+        LeanTween.cancel(gameObject);
+        transform.localScale = Vector3.one;
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         TweanManager.instance.PunchButton(gameObject);

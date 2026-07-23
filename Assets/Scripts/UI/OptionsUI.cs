@@ -1,24 +1,24 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
 
 public class OptionsUI : MonoBehaviour,IPointerCaptureEvent
-{ 
-    [Header("Buttons")]
-    [SerializeField]
-    private GameObject startGame;
-    [SerializeField]
-    private GameObject options;
-    [SerializeField]
-    private GameObject controls;
-    [SerializeField]
-    private GameObject credits;
-    [SerializeField]
-    private GameObject exit;
+{
+    public void StartGame(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
+    }
 
-
-    
+    public void ExitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
 }
