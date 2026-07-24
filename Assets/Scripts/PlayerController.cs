@@ -8,8 +8,9 @@ public class PlayerController : MonoBehaviour
     [Header("Components")]
     public float moveSpeed;
     public bool isMoving;
-    public Vector2 input;
-
+    private Vector2 input;
+    public Rigidbody2D rb;
+     
     private void Update()
     {
         input = Vector2.zero;
@@ -20,8 +21,14 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.D)) input.x += 1;
 
         input = input.normalized; //prevents diagonal being faster
+        //= (Vector3)(input * moveSpeed * Time.deltaTime);
+        
+        rb.MovePosition(rb.position + input * moveSpeed * Time.fixedDeltaTime);
+    }
 
-        transform.position += (Vector3)(input * moveSpeed * Time.deltaTime);
+    private void FixedUpdate()
+    {
+        //rb.MovePosition(rb.position + input * moveSpeed * Time.fixedDeltaTime);
     }
 }
 
