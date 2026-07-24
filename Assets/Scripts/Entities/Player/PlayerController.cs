@@ -29,7 +29,7 @@ public class PlayerController : Player
         rb.MovePosition(rb.position + input * moveSpeed * Time.fixedDeltaTime);
 
         if (Input.GetKey(KeyCode.E))
-            gadget.CrankLight();
+            StartCoroutine(gadget.CrankLight());
     }
 
 

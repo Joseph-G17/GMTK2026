@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Timers;
+using UnityEditor;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
@@ -17,7 +18,9 @@ public class PlayerGadgets : MonoBehaviour
     [SerializeField] private float radiusInner;
     [SerializeField] private float radiusOuter;
     [SerializeField] private float falloff;
-    int count;
+    private int count;
+    private int maxCount = 4;
+    private bool isCranking;
 
     private void Awake()
     {
@@ -59,12 +62,18 @@ public class PlayerGadgets : MonoBehaviour
     }
 
     public IEnumerator CrankLight()
-    {   if (count < 4)
+    {   if (count < maxCount)
         {
-            StartCoroutine(LerpFloat(userLight.intensity, userLight.intensity + 0.3f, 0.8f, value => userLight.intensity = value));
-            StartCoroutine(LerpFloat(userLight.pointLightOuterRadius, userLight.pointLightOuterRadius + 1.5f, 1f, value => userLight.pointLightOuterRadius = value));
+            if (isCranking) yield break;
+
+            isCranking = true;
+
+            StartCoroutine(LerpFloat(userLight.intensity, userLight.intensity + 0.3f, 2f, value => userLight.intensity = value));
+            yield return StartCoroutine(LerpFloat(userLight.pointLightOuterRadius, userLight.pointLightOuterRadius + 1f, 2f, value => userLight.pointLightOuterRadius = value));
+            count++;
+
+            isCranking = false;
         }
-        yield return null;
     }
 
 }
