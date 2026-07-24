@@ -26,10 +26,6 @@ public class PlayerController : MonoBehaviour
         rb.MovePosition(rb.position + input * moveSpeed * Time.fixedDeltaTime);
     }
 
-    private void FixedUpdate()
-    {
-        //rb.MovePosition(rb.position + input * moveSpeed * Time.fixedDeltaTime);
-    }
 }
 
 
