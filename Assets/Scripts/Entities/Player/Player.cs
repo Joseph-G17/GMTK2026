@@ -9,15 +9,20 @@ public class Player : MonoBehaviour
     [SerializeField] protected SpriteRenderer sr;
     [SerializeField] protected Animator animator;
     [SerializeField] protected PlayerController movement;
+    [SerializeField] protected PlayerGadgets gadget;
 
     protected virtual void Start()
     {
+        player = this;
+
         if (sr == null)
             sr = GetComponent<SpriteRenderer>();
         if (animator == null)
             animator = GetComponent<Animator>();
         if (movement == null)
             movement = GetComponent<PlayerController>();
+        if (gadget == null)
+            gadget = GetComponent<PlayerGadgets>();
 
         isDead = false;
         movement.canMove = true;

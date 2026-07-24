@@ -2,15 +2,9 @@ using UnityEngine;
 
 public class KillCollider : MonoBehaviour
 {
-    [SerializeField] private CircleCollider2D collider; 
-    private void Awake()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collider == null)
-            collider = GetComponent<CircleCollider2D>();
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        Player.player.Death();
+        if(collision.gameObject.CompareTag("Player"))
+            Player.player.Death();
     }
 }
