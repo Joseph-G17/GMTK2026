@@ -3,9 +3,13 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] Transform target;
+    public enum Modes { Roaming, Following, Chasing, Trapped}
+    [SerializeField]
+    public Modes currentMode = Modes.Roaming;
 
-    NavMeshAgent agent;
+    [Header("Components")]
+    [SerializeField] public Transform target;
+    [SerializeField] public NavMeshAgent agent;
 
     void Start()
     {

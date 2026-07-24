@@ -3,16 +3,18 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : Player
 {
     [Header("Components")]
     public float moveSpeed;
-    public bool isMoving;
+    public bool canMove;
     private Vector2 input;
-    public Rigidbody2D rb;
      
-    private void Update()
+    protected override void Update()
     {
+        if (canMove == false)
+            return;
+
         input = Vector2.zero;
         
         if (Input.GetKey(KeyCode.W)) input.y += 1;
