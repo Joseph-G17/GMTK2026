@@ -3,18 +3,13 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
-    public enum Modes { Roaming, Following, Chasing, Trapped }
+    public enum Modes { Roaming, Following, Chasing, Trapped}
     [SerializeField]
     public Modes currentMode = Modes.Roaming;
 
     [Header("Components")]
     [SerializeField] public Transform target;
     [SerializeField] public NavMeshAgent agent;
-    [SerializeField] public NavMeshPath path;
-
-   
-
-
 
     void Start()
     {
@@ -26,6 +21,5 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         agent.SetDestination(target.position);
-        agent.
     }
 }
