@@ -636,6 +636,5 @@ MonoBehaviour:
   radiusInner: 0
   radiusOuter: 0
   falloff: 0
-  arrowUIBehaviour: {fileID: 0}
-  baseArrowSpeed: 1
-  speedIncreasePerCharge: 0.5
+  maxCharges: 3
+  rechargeTime: 20
