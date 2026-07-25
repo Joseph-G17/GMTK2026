@@ -48,11 +48,11 @@ public class PlayerController : Player
         // Flip to face left when pressing A, face right (default) when pressing D
         if (Input.GetKey(KeyCode.A))
         {
-            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+            rig.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+            rig.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
         }
         // W alone doesn't change facing here — add an else-if for KeyCode.W
         // if you want a distinct "facing up" flip/rotation too.

@@ -1,3 +1,4 @@
+using UnityEditor.Animations;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -7,9 +8,11 @@ public class Player : MonoBehaviour
 
     [HideInInspector] public bool isDead;
     //[SerializeField] protected SpriteRenderer sr;
-    [SerializeField] protected Animator animator;
+    [SerializeField] public  Animator animator;
     [SerializeField] protected PlayerController movement;
     [SerializeField] protected PlayerGadgets gadget;
+    [SerializeField] public Transform rig;
+
     private Vector2 input;
 
     protected virtual void Start()
@@ -18,11 +21,17 @@ public class Player : MonoBehaviour
 
         //if (sr == null) sr = GetComponent<SpriteRenderer>();
         if (animator == null)
-            animator = GetComponent<Animator>();
+            animator = GetComponentInChildren<Animator>();
         if (movement == null)
             movement = GetComponent<PlayerController>();
         if (gadget == null)
             gadget = GetComponent<PlayerGadgets>();
+        if (rb == null)
+            rb = GetComponentInChildren<Rigidbody2D>();
+        if (rig == null)
+            rig = GetComponentInChildren<Transform>();
+
+
 
         isDead = false;
         movement.canMove = true;
@@ -41,5 +50,6 @@ public class Player : MonoBehaviour
         movement.canMove = false;
         //sr.enabled = false;
         gadget.userLight.enabled = false;
+        rig.gameObject.SetActive(false);
     }
 }

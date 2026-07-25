@@ -389,14 +389,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 673740258832720967}
-  - component: {fileID: 1032675848332990507}
   - component: {fileID: 3586797776588373873}
   - component: {fileID: 5917906297097578499}
   - component: {fileID: 4296724648151365183}
   - component: {fileID: 4165504493651059470}
   m_Layer: 0
   m_Name: Player 1
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -419,25 +418,6 @@ Transform:
   - {fileID: 3221900944012189697}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1032675848332990507
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6989028165543184750}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d26cb82a8bb228343923206ca55f2e55, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  rb: {fileID: 0}
-  isDead: 0
-  animator: {fileID: 0}
-  movement: {fileID: 0}
-  gadget: {fileID: 0}
-  moveSpeed: 0
-  canMove: 0
 --- !u!50 &3586797776588373873
 Rigidbody2D:
   serializedVersion: 5
@@ -526,8 +506,9 @@ MonoBehaviour:
   rb: {fileID: 3586797776588373873}
   isDead: 0
   animator: {fileID: 1324845210888670772}
-  movement: {fileID: 1032675848332990507}
+  movement: {fileID: 0}
   gadget: {fileID: 4165504493651059470}
+  rig: {fileID: 3125089279679450945}
   moveSpeed: 3
   canMove: 0
 --- !u!114 &4165504493651059470
