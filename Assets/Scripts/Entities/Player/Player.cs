@@ -40,5 +40,6 @@ public class Player : MonoBehaviour
         isDead = true;
         movement.canMove = false;
         sr.enabled = false;
+        gadget.userLight.enabled = false;
     }
 }

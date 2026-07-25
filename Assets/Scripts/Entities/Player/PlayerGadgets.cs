@@ -9,7 +9,7 @@ public class PlayerGadgets : MonoBehaviour
     PlayerController movement;
 
     [Header("Light Source")]
-    [SerializeField] private Light2D userLight;
+    [SerializeField] public Light2D userLight;
     private bool lightOn;
     [SerializeField] private float intensity;
     [SerializeField] private float radiusInner;
@@ -18,9 +18,9 @@ public class PlayerGadgets : MonoBehaviour
 
     [Header("Charge Settings")]
     [SerializeField] private int maxCharges = 3;
-    [SerializeField] private float rechargeTime = 20f; // seconds to regain one charge
+    [SerializeField] private float rechargeTime = 10f; // seconds to regain one charge
     private int currentCharges;
-    private float rechargeTimer;
+    private float rechargeTimer = 0f;
     private bool isCranking;
     private bool isDimming; 
 
@@ -37,25 +37,51 @@ public class PlayerGadgets : MonoBehaviour
         radiusInner = userLight.pointLightInnerRadius;
         radiusOuter = userLight.pointLightOuterRadius;
         falloff = userLight.falloffIntensity;
-
+        rechargeTimer = 0f;
         currentCharges = maxCharges;
         isDimming = false;
     }
-
     void Update()
     {
-      
+     
     }
-
     public void OnCrankInput()
     {
         if (currentCharges <= 0) return; 
 
-        currentCharges--;
         StartCoroutine(CrankLight());
+        currentCharges--;
         Debug.Log($"Current Charges: {currentCharges}");
+
+        if (currentCharges == 0)
+            StartCoroutine(ChargeLight());
+    }
+    private IEnumerator CrankLight()
+    {
+        isCranking = true; 
+        StartCoroutine(LerpFloat(userLight.intensity, userLight.intensity + 0.7f, 1f, value => userLight.intensity = value));
+        yield return StartCoroutine(LerpFloat(userLight.pointLightOuterRadius, userLight.pointLightOuterRadius + 6f, 2f, value => userLight.pointLightOuterRadius = value));
+        isCranking = false;
+
     }
 
+    private IEnumerator TryDimLight()
+    {
+        if (isCranking) yield break;
+
+        isDimming = true;
+        StartCoroutine(LerpFloat(userLight.intensity, intensity, 15f, value => userLight.intensity = value));
+        StartCoroutine(LerpFloat(userLight.pointLightOuterRadius, radiusOuter, 15f, value => userLight.pointLightOuterRadius = value));
+        isDimming = false;
+
+        yield return null;
+    }
+    private IEnumerator ChargeLight()
+    {
+        yield return new WaitForSeconds(rechargeTime);
+        currentCharges = 3;
+        Debug.Log("Charges full");
+    }
     private IEnumerator LerpFloat(float startValue, float endValue, float duration, Action<float> onValueUpdate)
     {
         float elapsedTime = 0f;
@@ -71,36 +97,4 @@ public class PlayerGadgets : MonoBehaviour
 
         onValueUpdate(endValue);
     }
-
-    private IEnumerator CrankLight()
-    {
-        isCranking = true; 
-
-        StartCoroutine(LerpFloat(userLight.intensity, userLight.intensity + 0.3f, 2f, value => userLight.intensity = value));
-        yield return StartCoroutine(LerpFloat(userLight.pointLightOuterRadius, userLight.pointLightOuterRadius + 1f, 2f, value => userLight.pointLightOuterRadius = value));
-
-        isCranking = false;
-
-        if (currentCharges < maxCharges)
-        {
-            if(!isDimming)
-                StartCoroutine(DimLight());
-        }
-    }
-
-    private IEnumerator DimLight()
-    {
-        isDimming = true;
-
-        StartCoroutine(LerpFloat(userLight.intensity, intensity, 2f, value => userLight.intensity = value));
-        yield return StartCoroutine(LerpFloat(userLight.pointLightOuterRadius, radiusOuter, 2f, value => userLight.pointLightOuterRadius = value));
-
-        isDimming = false;
-        Debug.Log($"Current Charges: {currentCharges}");
-
-    }
-
-    public int CurrentCharges => currentCharges;
-    public int MaxCharges => maxCharges;
-    public float RechargeProgress => currentCharges >= maxCharges ? 1f : rechargeTimer / rechargeTime;
 }
