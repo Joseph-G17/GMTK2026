@@ -8,7 +8,7 @@ public class TileBorderGenerator : MonoBehaviour
     [SerializeField] private TileBase borderTile;
 
     [Tooltip("The layer to assign the border collider to")]
-    [SerializeField] private int borderLayerIndex = 0; // Default is 'Default'
+    [SerializeField] private int borderLayerIndex = 0; 
 
     [Header("Automation")]
     [SerializeField] private bool generateOnAwake = true;
@@ -36,13 +36,13 @@ public class TileBorderGenerator : MonoBehaviour
             return;
         }
 
-        //1. Setup the hidden Border Tilemap
+        //1.Setup the hidden Border Tilemap
         SetupBorderTilemap();
 
-        //2. Clear old border
+        //2.Clear old border
         borderTilemap.ClearAllTiles();
 
-        //3. Scan the main map and place ghost tiles around the edges
+        //3.Scan the main map and place ghost tiles around the edges
         //CompressBounds ensures we don't scan empty infinity space
         mainTilemap.CompressBounds();
         BoundsInt bounds = mainTilemap.cellBounds;
@@ -97,7 +97,7 @@ public class TileBorderGenerator : MonoBehaviour
             borderMapObject = borderTransform.gameObject;
         }
 
-        // Ensure it has the required components
+        //ensure it has the required components
         borderTilemap = borderMapObject.GetComponent<Tilemap>();
         if (borderTilemap == null) borderTilemap = borderMapObject.AddComponent<Tilemap>();
 

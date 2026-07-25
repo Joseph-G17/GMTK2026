@@ -16,6 +16,11 @@ public class PlayerController : Player
     public float sprintMultiplier = 1.5f;
     private float currentSpeed;
 
+    [Header("Footsteps")]
+    [SerializeField] private float footstepInterval = 0.5f; 
+    [SerializeField] private float sprintFootstepInterval = 0.3f; 
+    private float footstepTimer;
+
     protected override void Update()
     {
         if (canMove == false)
@@ -32,7 +37,9 @@ public class PlayerController : Player
         input = input.normalized;
         moveInput = input;
 
+        //bool = true if we click shift and our input is moving
         isRunning = (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && input.sqrMagnitude > 0f;
+        //if isRunning is true currentSpeed is run, else currentSpeed is walk
         currentSpeed = isRunning ? moveSpeed * sprintMultiplier : moveSpeed;
 
         if (Input.GetKeyDown(KeyCode.E))
@@ -40,12 +47,34 @@ public class PlayerController : Player
 
         HandleFacing();
         HandleAnimation();
+        HandleFootsteps();
     }
 
     private void FixedUpdate()
     {
         if (canMove == false) return;
         rb.MovePosition(rb.position + moveInput * currentSpeed * Time.fixedDeltaTime);
+    }
+    private void HandleFootsteps()
+    {
+        bool isMoving = input.sqrMagnitude > 0f;
+
+        if (!isMoving)
+        {
+            footstepTimer = 0f; 
+            return;
+        }
+
+        footstepTimer -= Time.deltaTime;
+        if (footstepTimer <= 0f)
+        {
+            SoundManager.PlaySound(SoundManager.Library.player.footsteps, playerAudio, 1f);
+
+            float noiseRadius = isRunning ? 8f : 4f;
+            SoundManager.EmitSound(rb.position, noiseRadius);
+
+            footstepTimer = isRunning ? sprintFootstepInterval : footstepInterval;
+        }
     }
     private void HandleFacing()
     {
