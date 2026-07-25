@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     [SerializeField] protected PlayerController movement;
     [SerializeField] protected PlayerGadgets gadget;
     [SerializeField] public Transform rig;
+    [SerializeField] public AudioSource playerAudio;
 
     private Vector2 input;
 
@@ -30,7 +31,8 @@ public class Player : MonoBehaviour
             rb = GetComponentInChildren<Rigidbody2D>();
         if (rig == null)
             rig = GetComponentInChildren<Transform>();
-
+        if (playerAudio == null)
+            playerAudio = GetComponentInChildren<AudioSource>();
 
 
         isDead = false;
