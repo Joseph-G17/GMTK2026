@@ -12,7 +12,9 @@ public class PlayerController : Player
     private Vector2 input;
     private bool isWalking;
     private bool isRunning;
-    private Vector2 moveInput; // cached for FixedUpdate
+    private Vector2 moveInput;
+    public float sprintMultiplier = 1.5f;
+    private float currentSpeed;
 
     protected override void Update()
     {
@@ -28,8 +30,10 @@ public class PlayerController : Player
         if (Input.GetKey(KeyCode.A)) input.x -= 1;
         if (Input.GetKey(KeyCode.D)) input.x += 1;
         input = input.normalized;
+        moveInput = input;
 
-        moveInput = input; // store for physics step
+        isRunning = (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && input.sqrMagnitude > 0f;
+        currentSpeed = isRunning ? moveSpeed * sprintMultiplier : moveSpeed;
 
         if (Input.GetKeyDown(KeyCode.E))
             gadget.OnCrankInput();
@@ -41,11 +45,10 @@ public class PlayerController : Player
     private void FixedUpdate()
     {
         if (canMove == false) return;
-        rb.MovePosition(rb.position + moveInput * moveSpeed * Time.fixedDeltaTime);
+        rb.MovePosition(rb.position + moveInput * currentSpeed * Time.fixedDeltaTime);
     }
     private void HandleFacing()
     {
-        // Flip to face left when pressing A, face right (default) when pressing D
         if (Input.GetKey(KeyCode.A))
         {
             rig.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
@@ -54,14 +57,12 @@ public class PlayerController : Player
         {
             rig.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
         }
-        // W alone doesn't change facing here — add an else-if for KeyCode.W
-        // if you want a distinct "facing up" flip/rotation too.
     }
 
     private void HandleAnimation()
     {
-        isWalking = input.sqrMagnitude > 0f;
-        // isRunning stays false for now — hook up a sprint key later
+        isWalking = input.sqrMagnitude > 0f && !isRunning;
+        
 
         animator.SetBool("is_walking", isWalking);
         animator.SetBool("is_running", isRunning);
