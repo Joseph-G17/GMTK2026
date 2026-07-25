@@ -5,11 +5,12 @@ using UnityEngine;
 
 public class PlayerController : Player
 {
+
     [Header("Components")]
     public float moveSpeed;
     public bool canMove;
     private Vector2 input;
-     
+    
     protected override void Update()
     {
         if (canMove == false)
@@ -26,7 +27,11 @@ public class PlayerController : Player
         //= (Vector3)(input * moveSpeed * Time.deltaTime);
         
         rb.MovePosition(rb.position + input * moveSpeed * Time.fixedDeltaTime);
+
+        if (Input.GetKeyDown(KeyCode.E))
+            gadget.OnCrankInput();
     }
+
 
 }
 

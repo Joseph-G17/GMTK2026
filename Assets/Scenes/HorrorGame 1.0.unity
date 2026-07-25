@@ -5175,7 +5175,7 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
---- !u!114 &1767963088 stripped
+--- !u!114 &1859741473 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5690762928523048944, guid: f4a86c4e3f33cbc419837a2222102640, type: 3}
   m_PrefabInstance: {fileID: 1984257573}
@@ -5238,10 +5238,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Managers
       objectReference: {fileID: 0}
-    - target: {fileID: 5690762928523048944, guid: f4a86c4e3f33cbc419837a2222102640, type: 3}
-      propertyPath: deathscreen
-      value: 
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5280,7 +5276,7 @@ MonoBehaviour:
   m_LightType: 4
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
-  m_Color: {r: 0.1509434, g: 0.1509434, b: 0.1509434, a: 1}
+  m_Color: {r: 0.066037714, g: 0.066037714, b: 0.066037714, a: 1}
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
@@ -5346,6 +5342,10 @@ PrefabInstance:
     - target: {fileID: 3039180780846980148, guid: c8f0c86fc6dbd044d83309b0b10e95f1, type: 3}
       propertyPath: m_Name
       value: Monster
+      objectReference: {fileID: 0}
+    - target: {fileID: 3039180780846980148, guid: c8f0c86fc6dbd044d83309b0b10e95f1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4117654830983529458, guid: c8f0c86fc6dbd044d83309b0b10e95f1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5540,15 +5540,15 @@ PrefabInstance:
     - target: {fileID: 534811083523953348, guid: 9a70c618f36965e41b000c900b5c7499, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1767963088}
+      objectReference: {fileID: 1859741473}
     - target: {fileID: 534811083523953348, guid: 9a70c618f36965e41b000c900b5c7499, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1767963088}
+      objectReference: {fileID: 1859741473}
     - target: {fileID: 1272178407605594341, guid: 9a70c618f36965e41b000c900b5c7499, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1767963088}
+      objectReference: {fileID: 1859741473}
     - target: {fileID: 6172062718128073380, guid: 9a70c618f36965e41b000c900b5c7499, type: 3}
       propertyPath: m_Name
       value: HUD

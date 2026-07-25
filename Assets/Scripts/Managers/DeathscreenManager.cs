@@ -13,6 +13,8 @@ public class DeathscreenManager : MonoBehaviour
 
     void Start()
     {
+        instance = this;
+
         if (deathscreen == null)
             deathscreen = HUD.instance.deathscreen;
     }
