@@ -234,7 +234,13 @@ MonoBehaviour:
   agent: {fileID: 3881239214092729245}
   animator: {fileID: 0}
   detectRadius: {fileID: 0}
+  rig: {fileID: 0}
+  roamRadius: 8
+  roamStopTime: 0
   canSeePlayer: 0
+  enemyAudio: {fileID: 0}
+  canHearPlayer: 0
+  searchDuration: 4
 --- !u!195 &3881239214092729245
 NavMeshAgent:
   m_ObjectHideFlags: 0

@@ -5,8 +5,8 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
-    public enum Modes { Roaming, Following, Chasing, Stopped}
-
+    public enum Modes { Roaming, Following, Chasing, Looking, Stopped} //my goal: if loud enough noise made it will chase in sightmode
+                                                                       //stay looking after each looking returns to blind
     [SerializeField] public Modes currentMode = Modes.Roaming;
     private Modes previousMode;
 
@@ -18,13 +18,14 @@ public class Enemy : MonoBehaviour
     [SerializeField] private Transform rig;
 
     [Header("Roaming Settings")]
-    [SerializeField] private float roamRadius = 8f;
-    [SerializeField] private float roamStopTime;
+    [SerializeField] private float roamRadius = 10f;
+    [SerializeField] private float roamStopTime = 5f;
     private Vector2 roamOrigin;
     private float roamTimer;
 
     [Header("Sight Detection")]
-    [SerializeField] private bool canSeePlayer; 
+    [SerializeField] private bool canSeePlayer;
+    private bool inSightMode;
     private bool wasSeeingPlayer;
     private float startRadius = 2.5f;
     private Vector2 lastKnownPosition;
@@ -32,10 +33,21 @@ public class Enemy : MonoBehaviour
     [Header("Audio Detection")]
     public AudioSource enemyAudio;
     [SerializeField] private bool canHearPlayer;
+    private bool inBlindMode;
 
     [Header("Stopped/Search")]
     [SerializeField] private float searchDuration = 4f;
     private float searchTimer;
+
+    [Header("Hearing Thresholds")]
+    [SerializeField] private float loudSoundThreshold = 6f; 
+    [SerializeField] private float chaseAlertDuration = 5f;
+    private float chaseAlertTimer;
+
+    [Header("Looking/Search Settings")]
+    [SerializeField] private float searchRadius = 4f; 
+    [SerializeField] private float searchMoveWaitTime = 0.5f; 
+    private float searchMoveTimer;
 
     //rigging direction
     private float facingThreshold = 0.05f;
@@ -66,6 +78,7 @@ public class Enemy : MonoBehaviour
         wasSeeingPlayer = canSeePlayer;
         PickNewRoamPoint();
         detectRadius.radius = startRadius;
+        detectRadius.enabled = false;
     }
 
     void OnEnable()
@@ -95,7 +108,8 @@ public class Enemy : MonoBehaviour
     }
     private void Roam()
     {
-        roamStopTime = Random.Range(1f, 6f);
+        if (detectRadius.enabled == true)
+            detectRadius.enabled = false;
 
         roamTimer -= Time.deltaTime;
         bool reachedPoint = !agent.pathPending && agent.remainingDistance < 0.5f;
@@ -106,9 +120,34 @@ public class Enemy : MonoBehaviour
             roamTimer = roamStopTime;
         }
     }
+    private void Search()
+    {
+        searchMoveTimer -= Time.deltaTime;
+        bool reachedPoint = !agent.pathPending && agent.remainingDistance < 0.5f;
+
+        if (reachedPoint && searchMoveTimer <= 0f)
+        {
+            PickNewSearchPoint();
+            searchMoveTimer = searchMoveWaitTime;
+        }
+    }
+    private void PickNewSearchPoint()
+    {
+        Vector2 randomPoint = lastKnownPosition + Random.insideUnitCircle * searchRadius;
+        if (NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, searchRadius, NavMesh.AllAreas))
+        {
+            agent.SetDestination(hit.position);
+        }
+    }
     private void UpdateMode()
     {
-        if (canSeePlayer)
+        if (chaseAlertTimer > 0f && !canSeePlayer)
+        {
+            chaseAlertTimer -= Time.deltaTime;
+            currentMode = Modes.Chasing;
+            return;
+        }
+        if (canSeePlayer) 
         {
             currentMode = Modes.Chasing;
             lastKnownPosition = target.position;
@@ -117,23 +156,23 @@ public class Enemy : MonoBehaviour
         else if (currentMode == Modes.Chasing)
         {
             //investigate last known spot
-            currentMode = Modes.Stopped;
+            currentMode = Modes.Looking;
             searchTimer = searchDuration;
         }
-        else if (canHearPlayer && currentMode != Modes.Stopped)
+        else if (canHearPlayer && currentMode != Modes.Looking) //hear + cannot see
         {
             currentMode = Modes.Following;
             lastKnownPosition = target.position; 
         }
-        else if (currentMode == Modes.Stopped)
+        else if (currentMode == Modes.Looking) //investigate location can be in sight mode or blind mode
         {
             searchTimer -= Time.deltaTime;
             if (searchTimer <= 0f)
                 currentMode = Modes.Roaming;
         }
-        else if (currentMode == Modes.Following && agent.remainingDistance < 0.5f && !agent.pathPending)
+        else if (currentMode == Modes.Following && agent.remainingDistance < 0.5f && !agent.pathPending) //hear + investigate
         {
-            currentMode = Modes.Stopped; //reached location
+            currentMode = Modes.Looking; //reached location
             searchTimer = searchDuration;
         }
     }
@@ -141,16 +180,20 @@ public class Enemy : MonoBehaviour
     {
         switch (currentMode) {
             case Modes.Roaming:
+                Debug.Log("roaming");
                 Roam();
                 break;
             case Modes.Following:
                 agent.SetDestination(lastKnownPosition);
                 break;
             case Modes.Chasing:
-                agent.SetDestination(target.position);
+                agent.SetDestination(canSeePlayer ? target.position : lastKnownPosition); 
+                break;
+            case Modes.Looking:
+                Search();
                 break;
             case Modes.Stopped:
-                agent.SetDestination(lastKnownPosition);
+                agent.isStopped = true;
                 break;
         }
     }
@@ -180,34 +223,66 @@ public class Enemy : MonoBehaviour
     {
         float distance = Vector2.Distance(transform.position, soundPosition);
         canHearPlayer = distance <= soundRadius;
+
         if (canHearPlayer)
+        {
             lastKnownPosition = soundPosition;
+
+            if (soundRadius >= loudSoundThreshold)
+            {
+                currentMode = Modes.Chasing;
+                chaseAlertTimer = chaseAlertDuration;
+                Debug.Log("alerted!");
+                detectRadius.enabled = true;
+                //SoundManager.PlaySound(SoundManager.Library.spider.spiderWarning, enemyAudio);
+            }
+            else
+            {
+                Debug.Log("investigating!");
+            }
+        }
     }
 
-    private void UpdateSightState()
+    private void UpdateSightState()//if you are in DetectRadius you are in sightMode, if not are in blindMode
     {
-        if (canSeePlayer != wasSeeingPlayer)
+        inSightMode = currentMode == Modes.Chasing;
+        inBlindMode = currentMode != Modes.Chasing;
+        if (canSeePlayer != wasSeeingPlayer) //anumations expensive so we limit by tracking if 'was'
         {
-            //if canSeePlayer is true enter sight_mode, else canSeePlayer is false
-            animator.SetTrigger(canSeePlayer ? "sight_mode" : "blind_mode");
+            
             wasSeeingPlayer = canSeePlayer;
         }
     }
 
     private void UpdateActionState()
     {
-        bool isFollowing = currentMode == Modes.Following;
         bool isChasing = currentMode == Modes.Chasing; 
+        bool isLooking = currentMode == Modes.Looking;
         bool isStopped = currentMode == Modes.Stopped;
 
         animator.SetBool("is_chasing", isChasing);
+        animator.SetBool("is_looking", isLooking);
         animator.SetBool("is_stopped", isStopped);
-        animator.SetBool("is_following", isFollowing);
 
-        //"roaming" trigger only on the frame we transition INTO Roaming
-        if (currentMode == Modes.Roaming && previousMode != Modes.Roaming)
+        //only fire sounds on the frame we in a new mode
+        if (currentMode != previousMode)
         {
-            animator.SetTrigger("roaming");
+            switch (currentMode)
+            {
+                case Modes.Roaming:
+                    animator.SetTrigger("roaming");
+                    SoundManager.PlaySound(SoundManager.Library.spider.spiderRoam, enemyAudio);
+                    break;
+                case Modes.Looking:
+                    SoundManager.PlaySound(SoundManager.Library.spider.spiderLooking, enemyAudio);
+                    break;
+                case Modes.Stopped:
+                    SoundManager.PlaySound(SoundManager.Library.spider.spiderStopping, enemyAudio);
+                    break;
+                case Modes.Chasing:
+                    SoundManager.PlaySound(SoundManager.Library.spider.spiderChasing, enemyAudio);
+                    break;
+            }
         }
 
         previousMode = currentMode;
