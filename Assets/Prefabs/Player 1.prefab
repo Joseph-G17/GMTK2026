@@ -731,7 +731,7 @@ MonoBehaviour:
   gadget: {fileID: 4165504493651059470}
   rig: {fileID: 3125089279679450945}
   playerAudio: {fileID: 0}
-  moveSpeed: 3
+  moveSpeed: 2.5
   canMove: 0
   sprintMultiplier: 1.5
   footstepInterval: 0.4

@@ -35,7 +35,7 @@ public class TileBorderGenerator : MonoBehaviour
             Debug.LogError("Please assign a 'Border Tile' in the inspector to use as the collider shape.");
             return;
         }
-
+        mainTilemap = GetComponent<Tilemap>();
         //1.Setup the hidden Border Tilemap
         SetupBorderTilemap();
 

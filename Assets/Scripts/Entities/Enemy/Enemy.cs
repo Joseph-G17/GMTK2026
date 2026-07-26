@@ -18,7 +18,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private Transform rig;
 
     [Header("Roaming Settings")]
-    [SerializeField] private float roamRadius = 10f;
+    [SerializeField] private float roamRadius = 30f;
     [SerializeField] private float roamStopTime = 5f;
     private Vector2 roamOrigin;
     private float roamTimer;
@@ -40,7 +40,7 @@ public class Enemy : MonoBehaviour
     private float searchTimer;
 
     [Header("Hearing Thresholds")]
-    [SerializeField] private float loudSoundThreshold = 6f; 
+    [SerializeField] private float loudSoundThreshold = 8f; 
     [SerializeField] private float chaseAlertDuration = 5f;
     private float chaseAlertTimer;
 

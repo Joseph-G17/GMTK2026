@@ -235,13 +235,13 @@ MonoBehaviour:
   animator: {fileID: 0}
   detectRadius: {fileID: 0}
   rig: {fileID: 0}
-  roamRadius: 8
+  roamRadius: 30
   roamStopTime: 0
   canSeePlayer: 0
   enemyAudio: {fileID: 0}
   canHearPlayer: 0
   searchDuration: 4
-  loudSoundThreshold: 6
+  loudSoundThreshold: 12
   chaseAlertDuration: 5
   searchRadius: 3
   searchMoveWaitTime: 1
@@ -346,8 +346,8 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 0
-  MinDistance: 0.7
-  MaxDistance: 2
+  MinDistance: 0.1
+  MaxDistance: 1
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
