@@ -14,7 +14,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] public Transform target;
     [SerializeField] public NavMeshAgent agent;
     [SerializeField] private Animator animator;
-    [SerializeField] private CircleCollider2D detectRadius;
+    [SerializeField] public CircleCollider2D detectRadius;
     [SerializeField] private Transform rig;
 
     [Header("Roaming Settings")]

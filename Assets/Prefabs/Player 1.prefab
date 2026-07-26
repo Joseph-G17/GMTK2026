@@ -731,9 +731,9 @@ MonoBehaviour:
   gadget: {fileID: 4165504493651059470}
   rig: {fileID: 3125089279679450945}
   playerAudio: {fileID: 0}
-  moveSpeed: 2.5
+  moveSpeed: 3
   canMove: 0
-  sprintMultiplier: 1.5
+  sprintMultiplier: 1.6
   footstepInterval: 0.4
   sprintFootstepInterval: 0.25
 --- !u!114 &4165504493651059470
@@ -749,10 +749,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerGadgets
   userLight: {fileID: 1426388474524228160}
-  intensity: 0
-  radiusInner: 0
-  radiusOuter: 0
-  falloff: 0
+  baseIntensity: 0
+  baseRadiusOuter: 0
+  boostIntensityAdd: 0.4
+  boostRadiusAdd: 3
+  boostInDuration: 1
+  boostOutDuration: 15
   maxCharges: 3
   rechargeTime: 10
 --- !u!1001 &4355361474310911647
@@ -889,7 +891,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5344128890897765714, guid: 72bbf0bf4d9d8e84dafb97889e5dfddf, type: 3}
       propertyPath: m_SortingOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6497388092347307959, guid: 72bbf0bf4d9d8e84dafb97889e5dfddf, type: 3}
       propertyPath: m_SortingOrder

@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -10,91 +8,82 @@ public class PlayerGadgets : MonoBehaviour
 
     [Header("Light Source")]
     [SerializeField] public Light2D userLight;
-    private bool lightOn;
-    [SerializeField] private float intensity;
-    [SerializeField] private float radiusInner;
-    [SerializeField] private float radiusOuter;
-    [SerializeField] private float falloff;
+
+    [Header("Base Light Values")]
+    [SerializeField] private float baseIntensity;
+    [SerializeField] private float baseRadiusOuter;
+
+    [Header("Crank Boost Settings")]
+    [SerializeField] private float boostIntensityAdd = 0.7f;
+    [SerializeField] private float boostRadiusAdd = 6f;    
+    [SerializeField] private float dimDuration = 15f;         
 
     [Header("Charge Settings")]
     [SerializeField] private int maxCharges = 3;
-    [SerializeField] private float rechargeTime = 10f; // seconds to regain one charge
+    [SerializeField] private float rechargeTime = 10f;
     private int currentCharges;
-    private float rechargeTimer = 0f;
-    private bool isCranking;
-    private bool isDimming; 
+    private float rechargeTimer;
 
     private void Awake()
     {
         gadgets = this;
-
         if (movement == null)
             movement = GetComponent<PlayerController>();
         if (userLight == null)
             userLight = GetComponentInChildren<Light2D>();
 
-        intensity = userLight.intensity;
-        radiusInner = userLight.pointLightInnerRadius;
-        radiusOuter = userLight.pointLightOuterRadius;
-        falloff = userLight.falloffIntensity;
-        rechargeTimer = 0f;
+        baseIntensity = userLight.intensity;
+        baseRadiusOuter = userLight.pointLightOuterRadius;
+
         currentCharges = maxCharges;
-        isDimming = false;
+        rechargeTimer = 0f;
     }
+
     void Update()
     {
-     
+        DimTowardsBase();
+        HandleRecharge();
     }
+
     public void OnCrankInput()
     {
-        if (currentCharges <= 0) return; 
+        if (currentCharges <= 0) return;
 
-        StartCoroutine(CrankLight());
         currentCharges--;
         Debug.Log($"Current Charges: {currentCharges}");
 
+        userLight.intensity += boostIntensityAdd;
+        userLight.pointLightOuterRadius += boostRadiusAdd;
+
         if (currentCharges == 0)
-            StartCoroutine(ChargeLight());
-    }
-    private IEnumerator CrankLight()
-    {
-        isCranking = true; 
-        StartCoroutine(LerpFloat(userLight.intensity, userLight.intensity + 0.7f, 1f, value => userLight.intensity = value));
-        yield return StartCoroutine(LerpFloat(userLight.pointLightOuterRadius, userLight.pointLightOuterRadius + 6f, 2f, value => userLight.pointLightOuterRadius = value));
-        isCranking = false;
-
+            rechargeTimer = rechargeTime;
     }
 
-    private IEnumerator TryDimLight()
+    private void DimTowardsBase()
     {
-        if (isCranking) yield break;
+        float maxBoostIntensity = boostIntensityAdd * maxCharges;
+        float maxBoostRadius = boostRadiusAdd * maxCharges;
 
-        isDimming = true;
-        StartCoroutine(LerpFloat(userLight.intensity, intensity, 15f, value => userLight.intensity = value));
-        StartCoroutine(LerpFloat(userLight.pointLightOuterRadius, radiusOuter, 15f, value => userLight.pointLightOuterRadius = value));
-        isDimming = false;
+        float intensityRate = maxBoostIntensity / dimDuration;
+        float radiusRate = maxBoostRadius / dimDuration;
 
-        yield return null;
+        if (userLight.intensity > baseIntensity)
+            userLight.intensity = Mathf.MoveTowards(userLight.intensity, baseIntensity, intensityRate * Time.deltaTime);
+
+        if (userLight.pointLightOuterRadius > baseRadiusOuter)
+            userLight.pointLightOuterRadius = Mathf.MoveTowards(userLight.pointLightOuterRadius, baseRadiusOuter, radiusRate * Time.deltaTime);
     }
-    private IEnumerator ChargeLight()
-    {
-        yield return new WaitForSeconds(rechargeTime);
-        currentCharges = 3;
-        Debug.Log("Charges full");
-    }
-    private IEnumerator LerpFloat(float startValue, float endValue, float duration, Action<float> onValueUpdate)
-    {
-        float elapsedTime = 0f;
 
-        while (elapsedTime < duration)
+    private void HandleRecharge()
+    {
+        if (currentCharges >= maxCharges) return;
+        if (rechargeTimer <= 0f) return;
+
+        rechargeTimer -= Time.deltaTime;
+        if (rechargeTimer <= 0f)
         {
-            float t = elapsedTime / duration;
-            float currentValue = Mathf.Lerp(startValue, endValue, t);
-            onValueUpdate(currentValue);
-            elapsedTime += Time.deltaTime;
-            yield return null;
+            currentCharges = maxCharges;
+            Debug.Log("Charges full");
         }
-
-        onValueUpdate(endValue);
     }
 }
