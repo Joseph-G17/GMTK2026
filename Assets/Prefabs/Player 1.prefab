@@ -70,7 +70,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 3
+  orthographic size: 3.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -228,7 +228,7 @@ MonoBehaviour:
     CustomLookAtTarget: 0
   Lens:
     FieldOfView: 60
-    OrthographicSize: 3
+    OrthographicSize: 3.5
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -730,9 +730,12 @@ MonoBehaviour:
   movement: {fileID: 0}
   gadget: {fileID: 4165504493651059470}
   rig: {fileID: 3125089279679450945}
+  playerAudio: {fileID: 0}
   moveSpeed: 3
   canMove: 0
   sprintMultiplier: 1.5
+  footstepInterval: 0.4
+  sprintFootstepInterval: 0.25
 --- !u!114 &4165504493651059470
 MonoBehaviour:
   m_ObjectHideFlags: 0

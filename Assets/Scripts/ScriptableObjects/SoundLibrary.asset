@@ -32,3 +32,19 @@ MonoBehaviour:
     afterGlow:
       clips:
       - {fileID: 8300000, guid: 4bc32b0e7002c8b4885e85cb38533ca1, type: 3}
+  spider:
+    spiderRoam:
+      clips:
+      - {fileID: 8300000, guid: e368db1a07c6e644aa277316a9a25c4f, type: 3}
+    spiderLooking:
+      clips:
+      - {fileID: 8300000, guid: 7109a566cb737564287cd6b648a44600, type: 3}
+    spiderWarning:
+      clips:
+      - {fileID: 8300000, guid: 40ce0fa1f03178a4ba064b88633b0a7d, type: 3}
+    spiderStopping:
+      clips:
+      - {fileID: 8300000, guid: bdd71fe936f036b40999c1a00484a8fc, type: 3}
+    spiderChasing:
+      clips:
+      - {fileID: 8300000, guid: ac97fc23fba46db42af262ee7b56c7ef, type: 3}
