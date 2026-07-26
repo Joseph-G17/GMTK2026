@@ -125,6 +125,9 @@ public class Enemy : MonoBehaviour
         searchMoveTimer -= Time.deltaTime;
         bool reachedPoint = !agent.pathPending && agent.remainingDistance < 0.5f;
 
+        if (canHearPlayer)
+            currentMode = Modes.Following;
+
         if (reachedPoint && searchMoveTimer <= 0f)
         {
             PickNewSearchPoint();

@@ -70,7 +70,7 @@ public class PlayerController : Player
         {
             SoundManager.PlaySound(SoundManager.Library.player.footsteps, playerAudio, 1f);
 
-            float noiseRadius = isRunning ? 8f : 4.5f;
+            float noiseRadius = isRunning ? 8f : 3f;
             SoundManager.EmitSound(rb.position, noiseRadius);
 
             footstepTimer = isRunning ? sprintFootstepInterval : footstepInterval;
