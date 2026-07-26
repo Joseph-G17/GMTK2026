@@ -68,9 +68,9 @@ public class PlayerController : Player
         footstepTimer -= Time.deltaTime;
         if (footstepTimer <= 0f)
         {
-            SoundManager.PlaySound(SoundManager.Library.player.footsteps, playerAudio, 1f);
+            SoundManager.PlaySound(SoundManager.Library.player.footsteps, playerAudio, false);
 
-            float noiseRadius = isRunning ? 8f : 3f;
+            float noiseRadius = isRunning ? 10f : 5f;
             SoundManager.EmitSound(rb.position, noiseRadius);
 
             footstepTimer = isRunning ? sprintFootstepInterval : footstepInterval;
